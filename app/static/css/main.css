@@ -1,0 +1,33 @@
+.btn-profesor, .btn-estudiante, .btn-puerto{
+    float: left;
+    width: 100%;
+}
+#profesor, #estudiante, #puerto{
+    text-align: left;
+}
+input[type="color"] {
+    width: 20px;
+    height: 20px;
+    border-radius: 100%;
+    background-color: white;
+    border: none;
+}
+#sec1{
+    margin-top: 15vh;
+}
+#sec2{
+    border-radius: 1%;
+    padding: 3rem;
+}
+form {
+    padding: 5px;
+}
+.m-modal {
+    display: none;
+}
+canvas {
+    cursor: none;
+}
+body{
+    background: #007696;
+}
