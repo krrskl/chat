@@ -3,7 +3,8 @@ var usuarios = [];
 var matrizUsuarios;
 var miUsuario = {};
 var profesorEnv = {};
-var fil, col, profesor;
+var estudianteEnv = {};
+var fil, col, profesor, estudiante;
 var socket;
 $(document).ready(function () {
     socket = io.connect('http://' + document.domain + ':' + location.port);
@@ -16,10 +17,28 @@ $(document).ready(function () {
         profesorEnv.fila = fil;
         profesorEnv.columna = col;
         profesorEnv.tipo = "profesor";
-        // console.log(profesorEnv)
         socket.emit('iniciarChat', profesorEnv);
         location.href = "/chat";
-        // armarMatriz();
+    });
+    $('#iniciarSesion').on('submit', function (e) {
+        e.preventDefault();
+        estudiante = $("#estudiante").val();
+        fil = $("#fil").val();
+        col = $("#col").val();
+        estudianteEnv.nombre = estudiante;
+        estudianteEnv.fila = fil;
+        estudianteEnv.columna = col;
+        estudianteEnv.tipo = "estudiante";
+        socket.emit('iniciarSesionEst', estudianteEnv);
+        socket.emit('respuesta');
+        socket.on('respuesta', function(data){
+            console.log(data);
+            if(data){
+                location.href = "/chat";
+            }else{
+                console.log("no hay chat aun");
+            }
+        });
     });
 });
 function armarMatriz() {

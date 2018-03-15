@@ -10,11 +10,17 @@ def index():
 def chat():
 	return render_template('chat.html')
 
+
+@app.route('/iniciarSesion')
+def iniciarSesion():
+	return render_template('iniEstudiante.html')
+
 #Metodos del socket
 usuarios = []
 usuario = []
 profesor = []
 
+#recibe
 @socketio.on('connect')
 def connect():
 	print('usuario Conectado')
@@ -23,9 +29,27 @@ def connect():
 def iniciarChat(profesorRe):
 	profesor.append(profesorRe)
 
+@socketio.on('iniciarSesionEst')
+def iniciarSesionEst(usuario):
+	if(profesor):
+		usuarios.append(usuario)
+
+#envia
+
+@socketio.on('respuesta')
+def respuesta():
+	if(profesor):
+		emit('respuesta', True, broadcast=True)
+	else:
+		emit('respuesta', False, broadcast=True)
+
 @socketio.on('armarMatriz')
 def armarMatriz():
 	emit('FyC', profesor, broadcast=True)
+
+@socketio.on('getEstudiantes')
+def getEstudiantes():
+	emit('usuario', usuarios, broadcast=True)
 
 # @socketio.on('addUsuario')
 # def addUsuario(usuario):
