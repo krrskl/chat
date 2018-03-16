@@ -64,18 +64,18 @@ function armarMatriz() {
             matrizU.append('<br>');
         }
     })
-    // let matrizU = $(".usuariosConectados");
-    // for (let i = 0; i < fil; i++) {
-    //     for (let j = 0; j < col; j++) {
-    //         matrizU.append(`
-    //             <div id=${i}${j} class="usuario">
-    //                 <div class="usuairoContenido">
-    //                     <div class="foto"></div>
-    //                     <span>Nombre</span>
-    //                 </div>
-    //             </div>
-    //         `);
-    //     }
-    //     matrizU.append('<br>');
-    // }
+    let matrizU = $(".usuariosConectados");
+    for (let i = 0; i < 5; i++) {
+        for (let j = 0; j < 7; j++) {
+            matrizU.append(`
+                <div id=${i}${j} class="usuario">
+                    <div class="usuairoContenido">
+                        <div class="foto"></div>
+                        <span>Nombre</span>
+                    </div>
+                </div>
+            `);
+        }
+        matrizU.append('<br>');
+    }
 }

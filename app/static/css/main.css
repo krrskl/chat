@@ -31,3 +31,71 @@ canvas {
 body{
     background: #007696;
 }
+.usuariosChatContenedor {
+    width: 60%;
+    margin: auto;
+    display: flex;
+    height: 400px;
+}
+.usuariosConectados {
+    flex: 7;
+    overflow: auto;
+    padding: 10px;
+    margin: 10px;
+}
+.chat {
+    flex: 3;
+    background: white;
+    overflow: auto;
+    padding: 10px;
+    border-radius: 10px;
+}
+.usuario {
+    width: 60px;
+    height: 60px;
+    margin: 5px;
+    border-radius: 6px;
+    background-color: white;
+    display: inline-block;
+    cursor: pointer;
+}
+.profesorContainer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0px;
+}
+.message {
+    border-bottom: 1px solid #b3b3b3;
+    display: flex;
+    flex-direction: column;
+}
+.message .usuarioNombre {
+    font-size: .8em;
+}
+.message .texto {
+    font-size: .95em;
+    text-align: right;
+    margin-bottom: 5px;
+}
+.usuairoContenido {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.usuairoContenido .foto {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: red;
+}
+.usuairoContenido span {
+    font-size: .8em;
+}
+.container{
+    width: 95%;
+}
