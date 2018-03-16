@@ -47,6 +47,7 @@ body{
     overflow: scroll;
     padding: 10px;
     border-radius: 10px;
+    max-height: 528px;
 }
 .usuario {
     width: 60px;
