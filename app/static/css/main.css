@@ -36,12 +36,12 @@ body{
     margin: auto;
     display: flex;
     height: auto;
+    position: relative;
 }
 .usuariosConectados {
     overflow: hidden;
     min-width: 60%;
     min-height: 553px;
-    position: relative;
 }
 .chat {
     flex: 3;
@@ -49,7 +49,7 @@ body{
     overflow-y: scroll;
     padding: 10px;
     border-radius: 10px;
-    max-height: 528px;
+    max-height: 465px;
 }
 .usuario {
     width: 60px;
@@ -123,6 +123,8 @@ body{
 .container{
     width: 95%;
     margin: auto;
+    margin-bottom: 10vh;
+    margin-top: -10px;
 }
 .barra-m{
     width: 100%;
@@ -132,18 +134,18 @@ body{
 }
 .barra-m > #mensaje{
     height: 60px;
-    width: 81.6%;
+    width: 55.8%;
     border-radius: 6px;
     padding-left: 7px;
     font-size: 1em;
     font-weight: bold;
     font-family: sans-serif;
     border: none;
-    margin-left: 5px;
+    margin-left: 6px;
+    margin-right: 10px;
 }
 .barra-m > #mensaje:first-letter {text-transform:uppercase;}
 .barra-m > #enviar{
-    float: right;
     width: 61px;
     height: 60px;
     padding: 0 !important;
@@ -153,6 +155,16 @@ body{
     border: none;
     color: white;
     font-weight: bold;
+}
+.barra-m > #encuesta{
+    border: none;
+    height: 60px;
+    background: #FFC107;
+    width: 31%;
+    border-radius: 6px;
+    color: white;
+    font-weight: bold;
+    font-size: 1em;
 }
 *{
     font-family: sans-serif;
