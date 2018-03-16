@@ -6,7 +6,7 @@ var estudianteActual = {};
 var fil, col, profesor, estudiante;
 var socket;
 var profesor;
-var enviar;
+var enviar, inputEnviar;
 $(document).ready(function () {
     socket = io.connect('http://' + document.domain + ':' + location.port);
     socket.on('nuevoEstudiante', function (nombre) {
@@ -26,7 +26,7 @@ $(document).ready(function () {
                     </span>
                 </div>
             `)
-        }else{
+        } else {
             chat.append(`
                 <div class="message">
                     <span class="usuarioNombre">
@@ -39,6 +39,7 @@ $(document).ready(function () {
                 </div>
             `)
         }
+        scrollAutomatico();
     });
     $('#iniciar').on('submit', function (e) {
         e.preventDefault();
@@ -105,11 +106,16 @@ function mensaje(mensaje) {
 }
 
 function getMensajes() {
-    console.log("entro")
     socket.emit('getMensajes');
     socket.on('getMensajes', function (mensajes) {
         console.log(mensajes)
     })
+}
+
+function scrollAutomatico(){
+    $('.chat').animate({
+        scrollTop: $('.chat').get(0).scrollHeight
+    }, 3000);
 }
 
 function iniciar() {
@@ -155,16 +161,26 @@ function armarMatriz() {
         </div>
     `);
     enviar = $("#enviar");
+    inputEnviar = $("#mensaje");
     enviar.on('click', function (e) {
         e.preventDefault();
-        let mensajeEnv = $("#mensaje");
-        if (mensajeEnv.val()) {
-            let m = {};
-            m.mensaje = mensajeEnv.val();
-            m.usuario = estudianteActual.nombre;
-            socket.emit('nuevoMensaje', m);
-        }
+        enviarMensaje();
     })
+    inputEnviar.on('keyup', function (e) {
+        if (e.keyCode == 13) {
+            enviarMensaje();
+        }
+    });
+}
+function enviarMensaje() {
+    let mensajeEnv = $("#mensaje");
+    if (mensajeEnv.val()) {
+        let m = {};
+        m.mensaje = mensajeEnv.val();
+        m.usuario = estudianteActual.nombre;
+        socket.emit('nuevoMensaje', m);
+        mensajeEnv.val("");
+    }
 }
 
 function getProfesor() {
