@@ -29,32 +29,63 @@ $(document).ready(function () {
         estudianteEnv.fila = fil;
         estudianteEnv.columna = col;
         estudianteEnv.id = socket.id;
-        socket.emit('iniciarSesionEst', estudianteEnv);
-        location.href = "/chat";
+        socket.emit('getProfesor');
+        socket.on('getProfesor', function (data) {
+            profesor = data[data.length - 1]
+            if (fil >= profesor.fila || col >= profesor.columna) {
+                console.log("nel")
+            } else {
+                socket.emit('getEstudiantes');
+                socket.on('getEstudiantes', function (data) {
+                    estudiantes = data;
+                    if (estudiantes.length > 0) {
+                        let seguir = true;
+                        for (let e of estudiantes) {
+                            if (e.nombre == estudianteEnv.nombre || (e.fila == estudianteEnv.fila && e.columna == estudianteEnv.columna)) {
+                                seguir = false;
+                                break;
+                            }
+                        }
+                        if (seguir) {
+                            socket.emit('iniciarSesionEst', estudianteEnv);
+                            location.href = "/chat";
+                        } else {
+                            console.log("Nel2")
+                        }
+                    } else {
+                        socket.emit('iniciarSesionEst', estudianteEnv);
+                        location.href = "/chat";
+                    }
+                });
+            }
+        });
     });
 });
 
-function iniciar(){
+function iniciar() {
     getProfesor();
+    getEstudiantes();
 }
 
-function getEstudiantes(){
+function getEstudiantes() {
+    let x = $("#snackbar");
     socket.emit('getEstudiantes');
-    socket.on('getEstudiantes', function(data){
+    socket.on('getEstudiantes', function (data) {
+        x.addClass("show");
+        setTimeout(() => {
+            x.removeClass("show");
+        }, 3000);
         estudiantes = data;
-        for(let e of estudiantes){
-            if(e.id == socket.id){
-                estudianteActual = e;
-                break;
-            }
+        for (let e of estudiantes) {
+            let span = $(`#nombre${e.fila}${e.columna}`);
+            span[0].innerHTML = e.nombre;
         }
-        armarMatriz();
     });
 }
 
-function armarMatriz(){
+function armarMatriz() {
     let matrizU = $(".usuariosConectados");
-    matrizU[0].innerHTML="";
+    matrizU[0].innerHTML = "";
     for (let i = 0; i < profesor.fila; i++) {
         for (let j = 0; j < profesor.columna; j++) {
             matrizU.append(`
@@ -70,10 +101,10 @@ function armarMatriz(){
     }
 }
 
-function getProfesor(){
+function getProfesor() {
     socket.emit('getProfesor');
-    socket.on('getProfesor', function(data){
-        profesor = data[data.length-1]
+    socket.on('getProfesor', function (data) {
+        profesor = data[data.length - 1]
         $("#profesor")[0].innerHTML = profesor.nombre;
         armarMatriz();
     });
