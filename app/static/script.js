@@ -6,16 +6,26 @@ var estudianteActual = {};
 var fil, col, profesor, estudiante;
 var socket;
 var profesor;
+var enviar;
 $(document).ready(function () {
     socket = io.connect('http://' + document.domain + ':' + location.port);
-    socket.on('nuevoEstudiante', function(nombre){
-        let x = $("#snackbar");
-        x[0].innerHTML = "El estudiante "+nombre+" inicio sesión";
-        x.addClass("show");
-        setTimeout(() => {
-            x.removeClass("show");
-        }, 3000);
-    })
+    socket.on('nuevoEstudiante', function (nombre) {
+        mensaje("El estudiante " + nombre + " inicio sesión");
+    });
+    let chat = $(".chat");
+    socket.on('getMensajes', function (mensajes) {
+        chat.append(`
+            <div class="message">
+                <span class="usuarioNombre">
+                    <div class="foto"></div>
+                    ${mensajes[mensajes.length-1].usuario}
+                </span>
+                <span class="texto">
+                    ${mensajes[mensajes.length-1].mensaje}
+                </span>
+            </div>
+        `)
+    });
     $('#iniciar').on('submit', function (e) {
         e.preventDefault();
         profesor = $("#profesor").val();
@@ -41,7 +51,7 @@ $(document).ready(function () {
         socket.on('getProfesor', function (data) {
             profesor = data[data.length - 1]
             if (fil >= profesor.fila || col >= profesor.columna) {
-                console.log("nel")
+                mensaje("Filas o columnas no permitidas");
             } else {
                 socket.emit('getEstudiantes');
                 socket.on('getEstudiantes', function (data) {
@@ -56,9 +66,10 @@ $(document).ready(function () {
                         }
                         if (seguir) {
                             socket.emit('iniciarSesionEst', estudianteEnv);
+                            getEstudiantes();
                             location.href = "/chat";
                         } else {
-                            console.log("Nel2")
+                            mensaje("El estudiante ya existe o la posición esta ocupada");
                         }
                     } else {
                         socket.emit('iniciarSesionEst', estudianteEnv);
@@ -70,7 +81,28 @@ $(document).ready(function () {
     });
 });
 
+function mensaje(mensaje) {
+    let x = $("#snackbar");
+    x[0].innerHTML = mensaje;
+    x.addClass("show");
+    setTimeout(() => {
+        x.removeClass("show");
+    }, 3000);
+}
+
+function getMensajes(){
+    console.log("entro")
+    socket.emit('getMensajes');
+    socket.on('getMensajes', function(mensajes){
+        console.log(mensajes)
+    })
+}
+
 function iniciar() {
+    socket.emit('getUltimoEstudiante');
+    socket.on('usuarioActual', function(data){
+        estudianteActual = data;
+    });
     getProfesor();
     getEstudiantes();
 }
@@ -107,7 +139,18 @@ function armarMatriz() {
             <input type="text" id="mensaje" placeholder="Mensaje...">
             <input type="button" id="enviar" value="ENVIAR">
         </div>
-    `)
+    `);
+    enviar = $("#enviar");
+    enviar.on('click', function(e){
+        e.preventDefault();
+        let mensajeEnv = $("#mensaje");
+        if(mensajeEnv.val()){
+            let m = {};
+            m.mensaje = mensajeEnv.val();
+            m.usuario = estudianteActual.nombre;
+            socket.emit('nuevoMensaje', m);
+        }
+    })
 }
 
 function getProfesor() {

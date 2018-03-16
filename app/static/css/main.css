@@ -44,7 +44,7 @@ body{
 .chat {
     flex: 3;
     background: white;
-    overflow: auto;
+    overflow: scroll;
     padding: 10px;
     border-radius: 10px;
 }

@@ -16,6 +16,7 @@ def iniciarSesion():
 
 estudiantes = []
 profesor = []
+mensajes = []
 
 #recibe
 @socketio.on('connect')
@@ -25,16 +26,23 @@ def connect():
 @socketio.on('iniciarChat')
 def iniciarChat(profesorRe):
 	profesor.append(profesorRe)
-	print(profesor)
 
 @socketio.on('iniciarSesionEst')
 def iniciarSesionEst(estudiante):
 	if(profesor):
-		print(estudiante['nombre'])
 		emit('nuevoEstudiante', estudiante['nombre'], broadcast=True)
 		estudiantes.append(estudiante)
 
+@socketio.on('nuevoMensaje')
+def nuevoMensaje(mensaje):
+	mensajes.append(mensaje)
+	emit('getMensajes', mensajes, broadcast=True)
+
 #envia
+@socketio.on('getMensajes')
+def getMensajes():
+	emit('getMensajes', mensajes, broadcast=True)
+
 @socketio.on('getProfesor')
 def getProfesor():
 	emit('getProfesor', profesor, broadcast=True)
@@ -42,3 +50,10 @@ def getProfesor():
 @socketio.on('getEstudiantes')
 def getEstudiantes():
 	emit('getEstudiantes', estudiantes, broadcast=True)
+
+@socketio.on('getUltimoEstudiante')
+def getUltimoEstudiante():
+	if(estudiantes):
+		emit('usuarioActual',estudiantes[len(estudiantes)-1])
+	else:
+		emit('usuarioActual',profesor[len(profesor)-1])
