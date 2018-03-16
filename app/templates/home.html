@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="../static/materialize.min.css">
+    <link rel="stylesheet" href="../static/css/main.css">
 
     <!-- Compiled and minified JavaScript -->
     <script type="text/javascript" src="../static/socket.io.min.js"></script>
@@ -15,42 +16,23 @@
     <script src="../static/script.js" charset="utf-8"></script>
     <title>Chat Salon</title>
 
-    <style>
-        input[type="color"] {
-            width: 20px;
-            height: 20px;
-            border-radius: 100%;
-            background-color: white;
-            border: none;
-        }
-
-        form {
-            padding: 5px;
-        }
-
-        .m-modal {
-            display: none;
-        }
-
-        canvas {
-            cursor: none;
-        }
-    </style>
-
 </head>
 
-<body class="teal">
-    <div class="row">
+<body>
+    <!-- <div class="row">
         <div class="col l12 s12 m12 center">
             <h1 class="white-text">Chat Salon - Iniciar chat</h1>
         </div>
-    </div>
+    </div> -->
 
-    <div class="row">
-        <div class="col m6 s8 l4 white offset-l4 offset-m3 offset-s2 z-depth-2">
+    <div class="row" id="sec1">
+        <div id="sec2" class="col m6 s8 l4 white offset-l4 offset-m3 offset-s2 z-depth-2">
+            <div class="center">
+                <h4>Chat Salon - Iniciar chat</h4>
+            </div>
             <form id="iniciar" class="center">
                 <div class="row">
-                    <div class="col l10 m10 s12 offset-l1 offset-m1 ">
+                    <div class="btn-profesor">
                         <input id="profesor" type="text" class="center" placeholder="Profesor" required>
                     </div>
                 </div>
