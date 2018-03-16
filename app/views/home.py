@@ -17,6 +17,7 @@ def iniciarSesion():
 estudiantes = []
 profesor = []
 mensajes = []
+encuesta = []
 
 #recibe
 @socketio.on('connect')
@@ -36,12 +37,28 @@ def iniciarSesionEst(estudiante):
 @socketio.on('nuevoMensaje')
 def nuevoMensaje(mensaje):
 	mensajes.append(mensaje)
+	#envia de una
 	emit('getMensajes', mensajes, broadcast=True)
+
+@socketio.on('nuevaEncuesta')
+def nuevaEncuesta(encuestaRec):
+	encuesta.append(encuestaRec)
 
 #envia
 @socketio.on('getMensajes')
 def getMensajes():
 	emit('getMensajes', mensajes, broadcast=True)
+
+@socketio.on('verEncuesta')
+def verEncuesta():
+	if(encuesta):
+		emit('verEncuesta', True)
+	else:
+		emit('verEncuesta', False)
+
+@socketio.on('getEncuesta')
+def getEncuesta():
+	emit('getEncuesta', encuesta[len(encuesta)-1])
 
 @socketio.on('getProfesor')
 def getProfesor():

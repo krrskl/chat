@@ -59,10 +59,16 @@
             <div class="barra-m">
                 <input type="text" id="mensaje" placeholder="Mensaje...">
                 <input type="button" id="enviar" value="ENVIAR">
-                <input type="button" id="encuesta" value="ENCUESTA">
+                <input type="button" id="encuesta" value="ENCUESTA" class="m-open" m-open="one">
             </div>
         </div>
     </div>
+    <div class="m-modal" m-modal="one">
+        <div class="m-close">X</div>
+        <br>
+        <div class="m-close"><input type="button" id="guardarEncuesta" value="guardarEncuesta"></div>
+        <div class="m-body">         
+        </div>
+    </div>
 </body>
-
 </html>

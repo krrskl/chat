@@ -3,12 +3,14 @@ var estudiantes = [];
 var profesorEnv = {};
 var estudianteEnv = {};
 var estudianteActual = {};
+var encuesta = {};
 var fil, col, profesor, estudiante;
 var socket;
 var profesor;
 var enviar, inputEnviar;
 $(document).ready(function () {
     socket = io.connect('http://' + document.domain + ':' + location.port);
+    $(".m-open").modalF();
     socket.on('nuevoEstudiante', function (nombre) {
         mensaje("El estudiante " + nombre + " inicio sesión");
     });
@@ -50,6 +52,7 @@ $(document).ready(function () {
         profesorEnv.fila = fil;
         profesorEnv.columna = col;
         profesorEnv.id = socket.id;
+        profesorEnv.tipo = "profesor";
         socket.emit('iniciarChat', profesorEnv);
         location.href = "/chat";
     });
@@ -62,6 +65,7 @@ $(document).ready(function () {
         estudianteEnv.fila = fil;
         estudianteEnv.columna = col;
         estudianteEnv.id = socket.id;
+        estudianteEnv.tipo = "estudiante";
         socket.emit('getProfesor');
         socket.on('getProfesor', function (data) {
             profesor = data[data.length - 1]
@@ -94,7 +98,88 @@ $(document).ready(function () {
             }
         });
     });
+    $("#encuesta").on('click', function (e) {
+        e.preventDefault();
+        if (estudianteActual.tipo == "profesor") {
+            socket.emit('verEncuesta');
+            socket.on('verEncuesta', function (data) {
+                if (data) {
+                    $("#guardarEncuesta")[0].remove();
+                    $(".m-body")[0].innerHTML = "";
+                    $(".m-body").append(`
+                        <h1>Ya hay una encuesta creada</h1>
+                    `)
+                } else {
+                    $(".m-body").append(`
+                        <input id="pregunta" type="text" placeholder="Pregunta"><br>
+                        <div id="respuestas"></div><br>
+                        <input type="button" id="agregarRespuesta" value="agregarRespuesta">
+                    `)
+                    $("#agregarRespuesta").on('click', function (e) {
+                        e.preventDefault();
+                        let respuestas = $("#respuestas");
+                        respuestas.append(`
+                        <input type="text" placeholder="Respuesta">
+                    `)
+                    })
+                    $("#guardarEncuesta").on('click', function (e) {
+                        e.preventDefault();
+                        let respuestas = $("#respuestas")[0].children;
+                        let pregunta = $("#pregunta").val();
+                        let aRespuestas = [];
+                        for (let respuesta of respuestas) {
+                            aRespuestas.push(respuesta.value);
+                        }
+                        aRespuestas.push(pregunta);
+                        socket.emit('nuevaEncuesta', aRespuestas);
+                    })
+                }
+            })
+        } else {
+            $("#guardarEncuesta")[0].remove();
+            socket.emit('verEncuesta');
+            socket.on('verEncuesta', function (data) {
+                if (data) {
+                    socket.emit('getEncuesta');
+                    socket.on('getEncuesta', function (data) {
+                        $(".m-body")[0].innerHTML = "";
+                        $(".m-body").append(`
+                            <h1>¿${data[data.length - 1]}?</h1>
+                            <form id="encuestaResponder" name="res" action="">
+                            </form>
+
+                        `)
+                        for (let i = 0; i < data.length - 1; i++) {
+                            $("#encuestaResponder").append(`
+                                <input type="radio" name="respuesta" value="${data[i]}">${data[i]}<br>
+                            `)
+                        }
+                        $("#encuestaResponder").append(`
+                            <br>
+                            <button id="resEncuesta" type="submit" class="btn red">Responder</button>
+                        `)
+                    })
+                    $("#resEncuesta").on('click', function (e) {
+                        e.preventDefault();
+                        // let respuestaForm = verRespuesta(document.res.respuesta);
+                        console.log(respuestaForm)
+                    })
+                } else {
+                    $(".m-body")[0].innerHTML = "";
+                    $(".m-body").append(`
+                            No hay encuesta
+                    `)
+                }
+            })
+        }
+    })
 });
+
+function verRespuesta(form) {
+    console.log("hola")
+    for (i = 0; i < form.length; i++)
+        if (form[i].checked) return form[i].value;
+}
 
 function mensaje(mensaje) {
     let x = $("#snackbar");
@@ -112,7 +197,7 @@ function getMensajes() {
     })
 }
 
-function scrollAutomatico(){
+function scrollAutomatico() {
     $('.chat').animate({
         scrollTop: $('.chat').get(0).scrollHeight
     }, 3000);
