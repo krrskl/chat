@@ -39,6 +39,7 @@ body{
 }
 .usuariosConectados {
     overflow: hidden;
+    min-width: 60%;
 }
 .chat {
     flex: 3;
