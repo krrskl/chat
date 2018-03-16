@@ -148,12 +148,6 @@ function armarMatriz() {
         }
         matrizU.append('<br>');
     }
-    matrizU.append(`
-        <div class="barra-m">
-            <input type="text" id="mensaje" placeholder="Mensaje...">
-            <input type="button" id="enviar" value="ENVIAR">
-        </div>
-    `);
     enviar = $("#enviar");
     enviar.on('click', function (e) {
         e.preventDefault();
