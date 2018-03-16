@@ -40,7 +40,7 @@ body{
 .usuariosConectados {
     overflow: hidden;
     min-width: 60%;
-    min-height: 530px;
+    min-height: 553px;
     position: relative;
 }
 .chat {

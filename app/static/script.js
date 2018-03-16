@@ -14,17 +14,31 @@ $(document).ready(function () {
     });
     let chat = $(".chat");
     socket.on('getMensajes', function (mensajes) {
-        chat.append(`
-            <div class="message">
-                <span class="usuarioNombre">
-                    <div class="foto"></div>
-                    ${mensajes[mensajes.length-1].usuario}
-                </span>
-                <span class="texto">
-                    ${mensajes[mensajes.length-1].mensaje}
-                </span>
-            </div>
-        `)
+        if (mensajes[mensajes.length - 1].usuario == estudianteActual.nombre) {
+            chat.append(`
+                <div class="message">
+                    <span class="usuarioNombre">
+                        <div class="foto"></div>
+                        Yo
+                    </span>
+                    <span class="texto">
+                        ${mensajes[mensajes.length - 1].mensaje}
+                    </span>
+                </div>
+            `)
+        }else{
+            chat.append(`
+                <div class="message">
+                    <span class="usuarioNombre">
+                        <div class="foto"></div>
+                        ${mensajes[mensajes.length - 1].usuario}
+                    </span>
+                    <span class="texto">
+                        ${mensajes[mensajes.length - 1].mensaje}
+                    </span>
+                </div>
+            `)
+        }
     });
     $('#iniciar').on('submit', function (e) {
         e.preventDefault();
@@ -90,17 +104,17 @@ function mensaje(mensaje) {
     }, 3000);
 }
 
-function getMensajes(){
+function getMensajes() {
     console.log("entro")
     socket.emit('getMensajes');
-    socket.on('getMensajes', function(mensajes){
+    socket.on('getMensajes', function (mensajes) {
         console.log(mensajes)
     })
 }
 
 function iniciar() {
     socket.emit('getUltimoEstudiante');
-    socket.on('usuarioActual', function(data){
+    socket.on('usuarioActual', function (data) {
         estudianteActual = data;
     });
     getProfesor();
@@ -141,10 +155,10 @@ function armarMatriz() {
         </div>
     `);
     enviar = $("#enviar");
-    enviar.on('click', function(e){
+    enviar.on('click', function (e) {
         e.preventDefault();
         let mensajeEnv = $("#mensaje");
-        if(mensajeEnv.val()){
+        if (mensajeEnv.val()) {
             let m = {};
             m.mensaje = mensajeEnv.val();
             m.usuario = estudianteActual.nombre;
