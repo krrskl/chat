@@ -22,6 +22,20 @@ input[type="color"] {
 form {
     padding: 5px;
 }
+.m-body{
+    width: 60%;
+    margin: auto;
+    color: white;
+}
+#resEncuesta{
+    border: 0;
+    height: 30px;
+    width: 100px;
+    background-color: #f39c12;
+    border-radius: 6px;
+    color: white;
+    font-weight: bold;
+}
 .m-modal {
     display: none;
 }
@@ -132,7 +146,7 @@ body{
     bottom: 0;
     position: absolute;
 }
-.barra-m > #mensaje{
+.barra-m > #mensaje, #pregunta{
     height: 60px;
     width: 55.8%;
     border-radius: 6px;
@@ -143,6 +157,9 @@ body{
     border: none;
     margin-left: 6px;
     margin-right: 10px;
+}
+#pregunta{
+    width: 100%;
 }
 .barra-m > #mensaje:first-letter {text-transform:uppercase;}
 .barra-m > #enviar{

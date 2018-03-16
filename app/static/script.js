@@ -114,6 +114,7 @@ $(document).ready(function () {
                         <input id="pregunta" type="text" placeholder="Pregunta"><br>
                         <div id="respuestas"></div><br>
                         <input type="button" id="agregarRespuesta" value="agregarRespuesta">
+                        <input type="button" id="guardarEncuesta" value="Crear Encuesta">
                     `)
                     $("#agregarRespuesta").on('click', function (e) {
                         e.preventDefault();
