@@ -114,7 +114,7 @@ $(document).ready(function () {
                         <input id="pregunta" type="text" placeholder="Pregunta"><br>
                         <div id="respuestas"></div><br>
                         <input type="button" id="agregarRespuesta" value="Agregar Respuesta">
-                        <input type="button" id="guardarEncuesta" value="Crear Encuesta">
+                        <input class="m-close" type="button" id="guardarEncuesta" value="Crear Encuesta">
                     `)
                     $("#agregarRespuesta").on('click', function (e) {
                         e.preventDefault();
@@ -137,7 +137,6 @@ $(document).ready(function () {
                 }
             })
         } else {
-            $("#guardarEncuesta")[0].remove();
             socket.emit('verEncuesta');
             socket.on('verEncuesta', function (data) {
                 if (data) {
@@ -169,7 +168,7 @@ $(document).ready(function () {
                 } else {
                     $(".m-body")[0].innerHTML = "";
                     $(".m-body").append(`
-                            No hay encuesta
+                            <h3>No hay encuesta</h3>                            
                     `)
                 }
             })
