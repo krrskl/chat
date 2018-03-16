@@ -18,6 +18,7 @@ estudiantes = []
 profesor = []
 mensajes = []
 encuesta = []
+respuestas = []
 
 #recibe
 @socketio.on('connect')
@@ -44,10 +45,19 @@ def nuevoMensaje(mensaje):
 def nuevaEncuesta(encuestaRec):
 	encuesta.append(encuestaRec)
 
+@socketio.on('respuesta')
+def respuesta(respuestaRec):
+	respuestas.append(respuestaRec)
+	print(respuestas)
+
 #envia
 @socketio.on('getMensajes')
 def getMensajes():
 	emit('getMensajes', mensajes, broadcast=True)
+
+@socketio.on('getRespuestas')
+def getRespuestas():
+	emit('getRespuestas', respuestas)
 
 @socketio.on('verEncuesta')
 def verEncuesta():

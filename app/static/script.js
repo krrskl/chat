@@ -14,6 +14,9 @@ $(document).ready(function () {
     socket.on('nuevoEstudiante', function (nombre) {
         mensaje("El estudiante " + nombre + " inicio sesión");
     });
+    socket.on('getRespuestas', function(data){
+        console.log(data);
+    });
     let chat = $(".chat");
     socket.on('getMensajes', function (mensajes) {
         if (mensajes[mensajes.length - 1].usuario == estudianteActual.nombre) {
@@ -104,11 +107,12 @@ $(document).ready(function () {
             socket.emit('verEncuesta');
             socket.on('verEncuesta', function (data) {
                 if (data) {
-                    $("#guardarEncuesta")[0].remove();
                     $(".m-body")[0].innerHTML = "";
                     $(".m-body").append(`
                         <h1>Ya hay una encuesta creada</h1>
-                    `)
+                    `);
+                    console.log(data)
+                    socket.emit('getRespuestas');
                 } else {
                     $(".m-body").append(`
                         <input id="pregunta" type="text" placeholder="Pregunta"><br>
@@ -137,7 +141,6 @@ $(document).ready(function () {
                 }
             })
         } else {
-            $("#guardarEncuesta")[0].remove();
             socket.emit('verEncuesta');
             socket.on('verEncuesta', function (data) {
                 if (data) {
@@ -162,9 +165,11 @@ $(document).ready(function () {
                     })
                     $(".m-body").on('click', "#resEncuesta", function(e){
                         e.preventDefault();
-                        let respuestaForm = verRespuesta(document.res.respuesta);
-                        console.log(estudianteActual)
-                        console.log(respuestaForm)
+                        // let respuestaForm = verRespuesta(document.res.respuesta);
+                        let enviar = {};
+                        enviar.respuesta = verRespuesta(document.res.respuesta);
+                        enviar.usuario = estudianteActual.nombre;
+                        socket.emit('respuesta', enviar);
                     })
                 } else {
                     $(".m-body")[0].innerHTML = "";
