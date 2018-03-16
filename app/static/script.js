@@ -160,9 +160,10 @@ $(document).ready(function () {
                             <button id="resEncuesta" type="submit" class="btn red">Responder</button>
                         `)
                     })
-                    $("#resEncuesta").on('click', function (e) {
+                    $(".m-body").on('click', "#resEncuesta", function(e){
                         e.preventDefault();
-                        // let respuestaForm = verRespuesta(document.res.respuesta);
+                        let respuestaForm = verRespuesta(document.res.respuesta);
+                        console.log(estudianteActual)
                         console.log(respuestaForm)
                     })
                 } else {
@@ -177,8 +178,7 @@ $(document).ready(function () {
 });
 
 function verRespuesta(form) {
-    console.log("hola")
-    for (i = 0; i < form.length; i++)
+    for (let i = 0; i < form.length; i++)
         if (form[i].checked) return form[i].value;
 }
 
