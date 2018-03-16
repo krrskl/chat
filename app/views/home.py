@@ -20,7 +20,7 @@ profesor = []
 #recibe
 @socketio.on('connect')
 def connect():
-	print('usuario Conectado')
+	print("usuario conectado")
 
 @socketio.on('iniciarChat')
 def iniciarChat(profesorRe):
@@ -30,6 +30,8 @@ def iniciarChat(profesorRe):
 @socketio.on('iniciarSesionEst')
 def iniciarSesionEst(estudiante):
 	if(profesor):
+		print(estudiante['nombre'])
+		emit('nuevoEstudiante', estudiante['nombre'], broadcast=True)
 		estudiantes.append(estudiante)
 
 #envia

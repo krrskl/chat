@@ -8,6 +8,14 @@ var socket;
 var profesor;
 $(document).ready(function () {
     socket = io.connect('http://' + document.domain + ':' + location.port);
+    socket.on('nuevoEstudiante', function(nombre){
+        let x = $("#snackbar");
+        x[0].innerHTML = "El estudiante "+nombre+" inicio sesión";
+        x.addClass("show");
+        setTimeout(() => {
+            x.removeClass("show");
+        }, 3000);
+    })
     $('#iniciar').on('submit', function (e) {
         e.preventDefault();
         profesor = $("#profesor").val();
@@ -68,13 +76,8 @@ function iniciar() {
 }
 
 function getEstudiantes() {
-    let x = $("#snackbar");
     socket.emit('getEstudiantes');
     socket.on('getEstudiantes', function (data) {
-        x.addClass("show");
-        setTimeout(() => {
-            x.removeClass("show");
-        }, 3000);
         estudiantes = data;
         for (let e of estudiantes) {
             let span = $(`#nombre${e.fila}${e.columna}`);
