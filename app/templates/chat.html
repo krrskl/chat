@@ -1,176 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../static/css/main.css">
     <title>Chat Salon</title>
     <style>
-        /* The snackbar - position it at the bottom and in the middle of the screen */
-
-        #snackbar {
-            visibility: hidden;
-            /* Hidden by default. Visible on click */
-            min-width: 250px;
-            /* Set a default minimum width */
-            margin-left: -125px;
-            /* Divide value of min-width by 2 */
-            background-color: #333;
-            /* Black background color */
-            color: #fff;
-            /* White text color */
-            text-align: center;
-            /* Centered text */
-            border-radius: 2px;
-            /* Rounded borders */
-            padding: 16px;
-            /* Padding */
-            position: fixed;
-            /* Sit on top of the screen */
-            z-index: 1;
-            /* Add a z-index if needed */
-            left: 50%;
-            /* Center the snackbar */
-            bottom: 30px;
-            /* 30px from the bottom */
-        }
-
-        /* Show the snackbar when clicking on a button (class added with JavaScript) */
-
-        #snackbar.show {
-            visibility: visible;
-            /* Show the snackbar */
-            /* Add animation: Take 0.5 seconds to fade in and out the snackbar. 
-        However, delay the fade out process for 2.5 seconds */
-            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
-            animation: fadein 0.5s, fadeout 0.5s 2.5s;
-        }
-
-        /* Animations to fade the snackbar in and out */
-
-        @-webkit-keyframes fadein {
-            from {
-                bottom: 0;
-                opacity: 0;
-            }
-            to {
-                bottom: 30px;
-                opacity: 1;
-            }
-        }
-
-        @keyframes fadein {
-            from {
-                bottom: 0;
-                opacity: 0;
-            }
-            to {
-                bottom: 30px;
-                opacity: 1;
-            }
-        }
-
-        @-webkit-keyframes fadeout {
-            from {
-                bottom: 30px;
-                opacity: 1;
-            }
-            to {
-                bottom: 0;
-                opacity: 0;
-            }
-        }
-
-        @keyframes fadeout {
-            from {
-                bottom: 30px;
-                opacity: 1;
-            }
-            to {
-                bottom: 0;
-                opacity: 0;
-            }
-        }
-
         body {
-            background-color: #afafaf;
-        }
-
-        .usuariosChatContenedor {
-            width: 60%;
-            margin: auto;
-            display: flex;
-            height: 400px;
-        }
-
-        .usuariosConectados {
-            flex: 2;
-            overflow: auto;
-            padding: 10px;
-            margin: 10px;
-        }
-
-        .chat {
-            flex: 1;
-            background: white;
-            overflow: auto;
-            padding: 10px;
-            border-radius: 10px;
-        }
-
-        .usuario {
-            width: 55px;
-            height: 55px;
-            margin: 5px;
-            border-radius: 6px;
-            background-color: white;
-            display: inline-block;
-            cursor: pointer;
-        }
-
-        .profesorContainer {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 10px 0px;
-        }
-
-        .message {
-            border-bottom: 1px solid #b3b3b3;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .message .usuarioNombre {
-            font-size: .8em;
-        }
-
-        .message .texto {
-            font-size: .95em;
-            text-align: right;
-            margin-bottom: 5px;
-        }
-
-        .usuairoContenido {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-
-        .usuairoContenido .foto {
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
-            background-color: red;
-        }
-
-        .usuairoContenido span {
-            font-size: .8em;
+            background: linear-gradient(to right, #2c3e50 , #34495e);
         }
     </style>
 </head>
@@ -181,49 +20,53 @@
 <script src="../static/script.js" charset="utf-8"></script>
 
 <body onload="iniciar()">
-    <div id="snackbar">Hola</div>
-    <div class="profesorContainer">
-        <div class="usuario">
-            <div class="usuairoContenido">
-                <div class="foto"></div>
-                <span id="profesor">Profesor</span>
-            </div>
-        </div>
-    </div>
-    <div class="usuariosChatContenedor">
-
-        <div class="usuariosConectados">
-            <!-- <div class="usuario">
+    <div class="container">
+        <div class="profesorContainer">
+            <div class="usuario">
                 <div class="usuairoContenido">
                     <div class="foto"></div>
-                    <span>Nombre</span>
+                    <span id="profesor">Profesor</span>
                 </div>
-            </div> -->
-        </div>
-
-        <div class="chat">
-            <div class="message">
-                <span class="usuarioNombre">
-                    Jose Altamar
-                </span>
-                <span class="texto">
-                    soy el mensaje
-                </span>
             </div>
-            <div class="message">
-                <div class="usuarioNombre">
-                    Jose Altamar
+        </div>
+        <div class="usuariosChatContenedor">
+            <div class="usuariosConectados">
+                <!-- <div class="usuario">
+                    <div class="usuairoContenido">
+                        <div class="foto"></div>
+                        <span>Nombre</span>
+                    </div>
+                </div> -->
+            </div>
+
+            <div class="chat">
+                <div class="mensaje-center">
+                    <h5>
+                        <strong>MENSAJES</strong>
+                    </h5>
                 </div>
-                <div class="texto">
-                    soy el mensaje
+                <div class="message">
+                    <span class="usuarioNombre">
+                        <div class="foto"></div>
+                        Jose Altamar
+                    </span>
+                    <span class="texto">
+                        soy el mensaje
+                    </span>
+                </div>
+
+                <div class="message">
+                    <div class="usuarioNombre">
+                        <div class="foto"></div>
+                        Jose Altamar
+                    </div>
+                    <div class="texto">
+                        soy el mensaje
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <form class="mensajesConetenedor">
-        <input type="text">
-        <input type="submit" value="enviar">
-    </form>
 </body>
 
 </html>

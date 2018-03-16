@@ -31,3 +31,123 @@ canvas {
 body{
     background: #007696;
 }
+.usuariosChatContenedor {
+    width: 60%;
+    margin: auto;
+    display: flex;
+    height: auto;
+}
+.usuariosConectados {
+    overflow: hidden;
+}
+.chat {
+    flex: 3;
+    background: white;
+    overflow: auto;
+    padding: 10px;
+    border-radius: 10px;
+}
+.usuario {
+    width: 60px;
+    height: 60px;
+    margin: 5px;
+    border-radius: 6px;
+    background-color: #2ecc71;
+    display: inline-block;
+    cursor: pointer;
+    color: white;
+    font-weight: bold;
+    font-family: sans-serif;
+}
+.profesorContainer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0px;
+}
+.message {
+    border-bottom: 1px solid #b3b3b3;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 5px;
+}
+.message .usuarioNombre {
+    font-size: .8em;
+    font-weight: bold;
+    text-transform: capitalize;
+    display: flex;
+    align-items: center;
+}
+.message .usuarioNombre > .foto{
+    text-align: center;
+    width: 30px;
+    height: 30px;
+    background: #41ae60;
+    border-radius: 50%;
+    margin-right: 3px;
+}
+.mensaje-center{
+    text-align: center;
+}
+.message .texto::first-letter{
+    text-transform: uppercase;
+}
+.message .texto {
+    font-size: .95em;
+    text-align: right;
+    margin-bottom: 5px;
+}
+.usuairoContenido {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+.usuairoContenido .foto {
+    width: 25px;
+    height: 25px;
+    margin-top: 5px;
+    border-radius: 50%;
+    background-color: #27ae60;
+}
+.usuairoContenido span {
+    font-size: .8em;
+    text-transform: capitalize;
+}
+.container{
+    width: 95%;
+    margin: auto;
+}
+.barra-m{
+    width: 100%;
+    height: 60px;
+}
+.barra-m > #mensaje{
+    height: 60px;
+    width: 81.6%;
+    border-radius: 6px;
+    padding-left: 7px;
+    font-size: 1em;
+    font-weight: bold;
+    font-family: sans-serif;
+    border: none;
+    margin-left: 5px;
+}
+.barra-m > #mensaje:first-letter {text-transform:uppercase;}
+.barra-m > #enviar{
+    float: right;
+    width: 61px;
+    height: 60px;
+    padding: 0 !important;
+    margin-right: 7px;
+    border-radius: 6px;
+    background: #2ecc71;
+    border: none;
+    color: white;
+    font-weight: bold;
+}
+*{
+    font-family: sans-serif;
+}

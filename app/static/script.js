@@ -92,13 +92,19 @@ function armarMatriz() {
             <div class="usuario">
                 <div class="usuairoContenido">
                     <div class="foto"></div>
-                    <span id='nombre${i}${j}'></span>
+                    <span id='nombre${i}${j}'>libre</span>
                 </div>
             </div>
             `);
         }
         matrizU.append('<br>');
     }
+    matrizU.append(`
+        <div class="barra-m">
+            <input type="text" id="mensaje" placeholder="Mensaje...">
+            <input type="button" id="enviar" value="ENVIAR">
+        </div>
+    `)
 }
 
 function getProfesor() {
