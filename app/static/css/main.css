@@ -27,11 +27,11 @@ form {
     margin: auto;
     color: white;
 }
-#resEncuesta{
+#resEncuesta, #guardarEncuesta, #agregarRespuesta{
     border: 0;
     cursor: pointer;
     height: 30px;
-    width: 100px;
+    width: 140px;
     background-color: #f39c12;
     border-radius: 6px;
     color: white;
@@ -158,6 +158,16 @@ body{
     border: none;
     margin-left: 6px;
     margin-right: 10px;
+}
+#respuestas > input{
+    border: 0;
+    margin-left: 7px;
+    margin-top: 7px;
+    border-radius: 6px;
+    padding-left: 7px;
+    height: 30px;
+    width: 48%;
+    color: black;
 }
 #pregunta{
     width: 100%;
