@@ -1,11 +1,11 @@
 'use strict';
-var usuarios = [];
-var matrizUsuarios;
-var miUsuario = {};
+var estudiantes = [];
 var profesorEnv = {};
 var estudianteEnv = {};
+var estudianteActual = {};
 var fil, col, profesor, estudiante;
 var socket;
+var profesor;
 $(document).ready(function () {
     socket = io.connect('http://' + document.domain + ':' + location.port);
     $('#iniciar').on('submit', function (e) {
@@ -16,7 +16,7 @@ $(document).ready(function () {
         profesorEnv.nombre = profesor;
         profesorEnv.fila = fil;
         profesorEnv.columna = col;
-        profesorEnv.tipo = "profesor";
+        profesorEnv.id = socket.id;
         socket.emit('iniciarChat', profesorEnv);
         location.href = "/chat";
     });
@@ -28,54 +28,57 @@ $(document).ready(function () {
         estudianteEnv.nombre = estudiante;
         estudianteEnv.fila = fil;
         estudianteEnv.columna = col;
-        estudianteEnv.tipo = "estudiante";
+        estudianteEnv.id = socket.id;
         socket.emit('iniciarSesionEst', estudianteEnv);
-        socket.emit('respuesta');
-        socket.on('respuesta', function(data){
-            console.log(data);
-            if(data){
-                location.href = "/chat";
-            }else{
-                console.log("no hay chat aun");
-            }
-        });
+        location.href = "/chat";
     });
 });
-function armarMatriz() {
-    var profesorNombre;
-    profesorNombre = $("#profesor")[0];
-    socket.emit('armarMatriz');
-    socket.on('FyC', function (data) {
-        let datos = data[data.length-1];
-        profesorNombre.outerText = datos.nombre;
-        let matrizU = $(".usuariosConectados");
-        console.log(datos.fila, datos.columna)
-        for (let i = 0; i < datos.fila; i++) {
-            for (let j = 0; j < datos.columna; j++) {
-                matrizU.append(`
-                <div id=${i}${j} class="usuario">
-                    <div class="usuairoContenido">
-                        <div class="foto"></div>
-                        <span>Nombre</span>
-                    </div>
-                </div>
-            `);
+
+function iniciar() {
+    getProfesor();
+}
+
+function getEstudiantes() {
+    socket.emit('getEstudiantes');
+    socket.on('getEstudiantes', function (data) {
+        estudiantes = data;
+        for (let e of estudiantes) {
+            if (e.id == socket.id) {
+                estudianteActual = e;
+                break;
             }
-            matrizU.append('<br>');
         }
-    })
+        armarMatriz();
+    });
+}
+
+function armarMatriz() {
     let matrizU = $(".usuariosConectados");
+    matrizU[0].innerHTML = "";
     for (let i = 0; i < 5; i++) {
         for (let j = 0; j < 7; j++) {
             matrizU.append(`
-                <div id=${i}${j} class="usuario">
-                    <div class="usuairoContenido">
-                        <div class="foto"></div>
-                        <span>Nombre</span>
-                    </div>
+            <div class="usuario">
+                <div class="usuairoContenido">
+                    <div class="foto"></div>
+                    <span id='nombre${i}${j}'>libre</span>
                 </div>
+            </div>
             `);
         }
         matrizU.append('<br>');
     }
+    matrizU.append(`<div class="barra-m">
+        <input type="text" id="mensaje" placeholder="Mensaje...">
+        <input type="button" id="enviar" value="ENVIAR">
+        </div>`)
+}
+
+function getProfesor() {
+    socket.emit('getProfesor');
+    socket.on('getProfesor', function (data) {
+        profesor = data[data.length - 1]
+        $("#profesor")[0].innerHTML = profesor.nombre;
+        armarMatriz();
+    });
 }

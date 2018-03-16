@@ -10,14 +10,11 @@ def index():
 def chat():
 	return render_template('chat.html')
 
-
 @app.route('/iniciarSesion')
 def iniciarSesion():
 	return render_template('iniEstudiante.html')
 
-#Metodos del socket
-usuarios = []
-usuario = []
+estudiantes = []
 profesor = []
 
 #recibe
@@ -28,43 +25,18 @@ def connect():
 @socketio.on('iniciarChat')
 def iniciarChat(profesorRe):
 	profesor.append(profesorRe)
+	print(profesor)
 
 @socketio.on('iniciarSesionEst')
-def iniciarSesionEst(usuario):
+def iniciarSesionEst(estudiante):
 	if(profesor):
-		usuarios.append(usuario)
+		estudiantes.append(estudiante)
 
 #envia
-
-@socketio.on('respuesta')
-def respuesta():
-	if(profesor):
-		emit('respuesta', True, broadcast=True)
-	else:
-		emit('respuesta', False, broadcast=True)
-
-@socketio.on('armarMatriz')
-def armarMatriz():
-	emit('FyC', profesor, broadcast=True)
+@socketio.on('getProfesor')
+def getProfesor():
+	emit('getProfesor', profesor, broadcast=True)
 
 @socketio.on('getEstudiantes')
 def getEstudiantes():
-	emit('usuario', usuarios, broadcast=True)
-
-# @socketio.on('addUsuario')
-# def addUsuario(usuario):
-# 	usuarios.append(usuario)
-# 	emit('usuarios', usuarios, broadcast=True)
-
-# @socketio.on('updateUsuario')
-# def updateUsuario(user):
-# 	for i, u in enumerate(usuarios, start=0):
-# 		if u["id"] == user["id"]:
-# 			usuarios[i] = user
-# 			break
-# 	emit('usuarios', usuarios, broadcast=True)
-
-# @socketio.on('drawPoint')
-# def drawPoint(p):
-# 	points.append(p)
-# 	emit('points', points, broadcast=True)
+	emit('getEstudiantes', estudiantes, broadcast=True)
