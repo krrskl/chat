@@ -26,6 +26,19 @@ form {
     width: 60%;
     margin: auto;
     color: white;
+    margin-top: 10vh;
+}
+.m-body > h3{
+    margin-top: 45vh;
+    font-weight: bold;
+    font-family: sans-serif;
+    color: white;
+    text-align: center;
+    font-size: 3em;
+    text-transform: uppercase;
+}
+#agregarRespuesta{
+    margin-left: 7px;
 }
 #resEncuesta, #guardarEncuesta, #agregarRespuesta{
     border: 0;
@@ -158,7 +171,12 @@ body{
     border: none;
     margin-left: 6px;
     margin-right: 10px;
+}.m-body > h1 {
+    text-align: center;
+    font-weight: bold;
+    font-family: sans-serif;
 }
+#respuestas {width: 102%;}
 #respuestas > input{
     border: 0;
     margin-left: 7px;
