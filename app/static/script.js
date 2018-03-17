@@ -196,9 +196,11 @@ $(document).ready(function () {
     })
     $("#cerrarSesion").on('click', function(e){
         e.preventDefault();
-        console.log("hola")
         socket.emit('cerrarSesion', estudianteActual);
-        socket.disconnect();
+        location.href = "/iniciarSesion";
+        setTimeout(() => {
+            socket.disconnect();
+        }, 1000);
     })
     $('#iniciar').on('submit', function (e) {
         e.preventDefault();
@@ -209,7 +211,6 @@ $(document).ready(function () {
         profesorEnv.fila = fil;
         profesorEnv.columna = col;
         var file = document.querySelector('input[type="file"]').files[0];
-        console.log(file)
         if (file)
             getBase64(file);
         profesorEnv.tipo = "profesor";
@@ -293,7 +294,6 @@ function getBase64(file) {
         imagen = reader.result;
     };
     reader.onerror = function (error) {
-        console.log('Error: ', error);
     };
 }
 
@@ -314,7 +314,7 @@ function mensaje(mensaje) {
 function getMensajes() {
     socket.emit('getMensajes');
     socket.on('getMensajes', function (mensajes) {
-        console.log(mensajes)
+        
     })
 }
 
@@ -336,6 +336,7 @@ function iniciar() {
 function getEstudiantes() {
     socket.emit('getEstudiantes');
     socket.on('getEstudiantes', function (data) {
+        armarMatriz();
         estudiantes = data;
         for (let e of estudiantes) {
             let f = $(`#foto${e.fila}${e.columna}`);

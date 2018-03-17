@@ -36,7 +36,7 @@ def cerrarSesion(est):
 	if est in estudiantes:
 		estudiantes.remove(est)
 	emit('desconectado',est['nombre'], broadcast=True)
-	print(estudiantes)
+	emit('getEstudiantes', estudiantes, broadcast=True)
 
 @socketio.on('iniciarChat')
 def iniciarChat(profesorRe):
