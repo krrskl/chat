@@ -226,6 +226,9 @@ body{
     width: 48%;
     color: black;
 }
+#cerrarSesion{
+    bottom: 14vh;
+}
 #pregunta{
     width: 100%;
 }

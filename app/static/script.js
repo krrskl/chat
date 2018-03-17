@@ -24,7 +24,7 @@ $(document).ready(function () {
         if (e == "profesor") {
             if (estudianteActual.tipo != "profesor") {
                 let span = $("#proEscribiendo")[0];
-                span.innerHTML = "Escribiendo";
+                span.innerHTML = "Escrib...";
                 setTimeout(() => {
                     span.innerHTML = "";
                 }, 3000);
@@ -32,7 +32,7 @@ $(document).ready(function () {
         } else {
             if (estudianteActual.nombre != e.nombre) {
                 let span = $(`#${e.fila}${e.columna}`)[0];
-                span.innerHTML = "Escribiendo";
+                span.innerHTML = "Escrib...";
                 setTimeout(() => {
                     span.innerHTML = "";
                 }, 3000);
