@@ -137,6 +137,9 @@ $(document).ready(function () {
                         }
                         aRespuestas.push(pregunta);
                         socket.emit('nuevaEncuesta', aRespuestas);
+                        $(this).fadeOut();
+                        $("#pregunta").val('');
+                        $("#respuestas input").val('');
                     })
                 }
             })
