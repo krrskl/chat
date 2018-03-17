@@ -39,6 +39,8 @@ $(document).ready(function () {
             }
         }
     });
+
+    //Aquí es donde se dibuja el grafico
     socket.on('getEncuestaPro', function (data) {
         cantRespuesta = [];
         resGrafica = [];
@@ -53,45 +55,43 @@ $(document).ready(function () {
             cantRespuesta.push(contador);
             contador = 0;
         }
-        if (estudianteActual.tipo == "profesor") {
-            var ctx = document.getElementById("myChart").getContext('2d');
-            var myChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: resGrafica,
-                    datasets: [{
-                        label: "# de respuestas",
-                        data: cantRespuesta,
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255,99,132,0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(162, 162, 235, 0.2)',
-                            'rgba(255,99,132,0.2)',
-                        ],
-                        borderColor: [
-                            'rgba(255,99,132,1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 255, 132, 1)',
-                            'rgba(162, 162, 235, 1)',
-                            'rgba(162, 162, 235, 1)',
-                            'rgba(255,255,132,1)',
-                        ],
-                        borderWidth: 1
+        var ctx = document.getElementById("myChart").getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: resGrafica,
+                datasets: [{
+                    label: "# de respuestas",
+                    data: cantRespuesta,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255,99,132,1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(162, 162, 235, 1)',
+                        'rgba(255,99,132,1)',
+                    ],
+                    borderColor: [
+                        'rgba(255,99,132,1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 255, 132, 1)',
+                        'rgba(162, 162, 235, 1)',
+                        'rgba(162, 162, 235, 1)',
+                        'rgba(255,255,132,1)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
                     }]
-                },
-                options: {
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        }]
-                    }
                 }
-            });
-        }
+            }
+        });
     })
     socket.on('getRespuestas', function (data) {
         respuestasEncu = data;
@@ -103,7 +103,9 @@ $(document).ready(function () {
             chat.append(`
                 <div class="message">
                     <span class="usuarioNombre">
-                        <div class="foto"></div>
+                        <div class="foto">
+                            <img src="${estudianteActual.imagen}"/>
+                        </div>
                         Yo
                     </span>
                     <span class="texto">
@@ -115,7 +117,9 @@ $(document).ready(function () {
             chat.append(`
                 <div class="message">
                     <span class="usuarioNombre">
-                        <div class="foto"></div>
+                        <div class="foto">
+                            <img src="${mensajes[mensajes.length - 1].imagen}"/>
+                        </div>
                         ${mensajes[mensajes.length - 1].usuario}
                     </span>
                     <span class="texto">
@@ -141,7 +145,8 @@ $(document).ready(function () {
                 <div id="respuestas"></div><br>
                 <input type="button" id="agregarRespuesta" value="Agregar Respuesta">
                 <input class="m-close" type="button" id="guardarEncuesta" value="Crear Encuesta">
-            `)
+                <br>
+            `);
             $("#agregarRespuesta").on('click', function (e) {
                 e.preventDefault();
                 let respuestas = $("#respuestas");
@@ -181,9 +186,13 @@ $(document).ready(function () {
         $("#encuestaResponder").append(`
             <br>
             <button id="resEncuesta" type="submit" class="btn red">Responder</button>
+            <br>
+            <br>
+            <canvas id="myChart" width="400" height="400"></canvas>
         `)
+        socket.emit('getRespuestas');
     })
-    socket.on('desconectado', function(nombre){
+    socket.on('desconectado', function (nombre) {
         mensaje("El estudiante " + nombre + " cerro sesión")
     })
     /* comunicacion */
@@ -194,7 +203,7 @@ $(document).ready(function () {
         enviar.usuario = estudianteActual.nombre;
         socket.emit('respuesta', enviar);
     })
-    $("#cerrarSesion").on('click', function(e){
+    $("#cerrarSesion").on('click', function (e) {
         e.preventDefault();
         socket.emit('cerrarSesion', estudianteActual);
         location.href = "/iniciarSesion";
@@ -314,16 +323,19 @@ function mensaje(mensaje) {
 function getMensajes() {
     socket.emit('getMensajes');
     socket.on('getMensajes', function (mensajes) {
-        
+
     })
 }
 
+// Metodo utilizado para hacer scroll automamicamente al llegar un nuevo mensaje
 function scrollAutomatico() {
     $('.chat').animate({
         scrollTop: $('.chat').get(0).scrollHeight
     }, 3000);
 }
 
+
+//funcion que se ejecuta al iniciar el chat para dibujar todo
 function iniciar() {
     socket.emit('getUltimoEstudiante');
     socket.on('usuarioActual', function (data) {
@@ -348,6 +360,7 @@ function getEstudiantes() {
     });
 }
 
+//Llena la matriz con los espacios que especifico el profesor
 function armarMatriz() {
     let matrizU = $(".usuariosConectados");
     matrizU[0].innerHTML = "";
@@ -392,6 +405,7 @@ function enviarMensaje() {
         let m = {};
         m.mensaje = mensajeEnv.val();
         m.usuario = estudianteActual.nombre;
+        m.imagen = estudianteActual.imagen;
         socket.emit('nuevoMensaje', m);
         mensajeEnv.val("");
     }

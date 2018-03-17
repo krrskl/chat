@@ -1,0 +1,18 @@
+Prerequisitos:
+- Python
+- Google chrome (por el Filereader que se utiliza para manejar los avatar de los usuarios en base64)
+
+Para empezar se debe correr el comando "pip install -r requerimientos.txt"
+
+En el archivo run.py esta especificado el host y el puerto donde va a correr la aplicación
+
+Luego de configurado el archivo que por defecto tiene localhost y puerto 7000 corremos el comando "python run.py" y vamos al navegador en "http://localhost:7000".
+
+Rutas:
+- http://localhost:7000/ -> ruta raiz en la cual se requiere el nombre del profesor y el tamaño de la matriz del curso (opcional la foto)
+- http://localhost:7000/iniciarSesion -> ruta para el inicio de sesión de los estudiantes (se requiere antes haber creado el chat por el profesor)
+- http://localhost:7000/chat -> ruta donde aterrizan ambos usuarios (profesor y alumno) despues de iniciar
+
+Los metodos tiene nombres nemotecnicos, algunos tienen comentarios.
+
+

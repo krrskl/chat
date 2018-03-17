@@ -61,6 +61,7 @@ def nuevaEncuesta(encuestaRec):
 @socketio.on('respuesta')
 def respuesta(respuestaRec):
 	respuestas.append(respuestaRec)
+	#Metodo utilizado para agregar una nueva respuesta de la encuesta
 
 #envia
 @socketio.on('getMensajes')
@@ -86,6 +87,7 @@ def getEncuesta():
 def getEncuestaPro():
 	if(encuesta):
 		emit('getEncuestaPro', encuesta[len(encuesta)-1])
+		#Metodo utilizado para recibir la encuesta y dibujar el grafico
 
 @socketio.on('escribiendo')
 def escribiendo(estudiante):
