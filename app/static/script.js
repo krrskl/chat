@@ -118,15 +118,16 @@ $(document).ready(function () {
                         for (let respuesta of data) {
                             respuestasEncu.push(data.respuesta);
                         }
-                        let r = 0;
-                        for (pregunta of preguntasEncu) {
-                            for (respuesta of respuestasEncu) {
-                                if (respuesta == pregunta) r++;
-                            }
-                            cantRespuesta.push(r);
-                            r = 0;
-                        }
-                        console.log(data, respuestasEncu, preguntasEncu, cantRespuesta);
+                        console.log(respuestasEncu);
+                        // let r = 0;
+                        // for (pregunta of preguntasEncu) {
+                        //     for (respuesta of respuestasEncu) {
+                        //         if (respuesta == pregunta) r++;
+                        //     }
+                        //     cantRespuesta.push(r);
+                        //     r = 0;
+                        // }
+                        // console.log(data, respuestasEncu, preguntasEncu, cantRespuesta);
                         var myChart = new Chart(ctx, {
                             type: 'bar',
                             data: {
