@@ -31,9 +31,6 @@ form {
     margin: auto;
     color: white;
     margin-top: 10vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
 }
 .m-body > h3{
     margin-top: 45vh;
