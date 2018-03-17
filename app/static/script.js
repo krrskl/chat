@@ -4,18 +4,102 @@ var profesorEnv = {};
 var estudianteEnv = {};
 var estudianteActual = {};
 var encuesta = {};
-var fil, col, profesor, estudiante;
+var fil, col, profesor, estudiante, imagen;
 var socket;
 var profesor;
 var enviar, inputEnviar;
 var preguntasEncu = [];
 var respuestasEncu = [];
 var cantRespuesta = [];
+var resGrafica = [];
+var escribiendo = false;
 $(document).ready(function () {
+    /* comunicacion */
     socket = io.connect('http://' + document.domain + ':' + location.port);
     $(".m-open").modalF();
     socket.on('nuevoEstudiante', function (nombre) {
         mensaje("El estudiante " + nombre + " inicio sesión");
+    });
+    socket.on('disconnect', function () {
+        socket.emit('disconnect');
+        mensaje("Un usuario cerro sesión");
+    });
+    socket.on('escribiendo', function (e) {
+        if (e == "profesor") {
+            if (estudianteActual.tipo != "profesor") {
+                let span = $("#proEscribiendo")[0];
+                span.innerHTML = "Escribiendo";
+                setTimeout(() => {
+                    span.innerHTML = "";
+                }, 3000);
+            }
+        } else {
+            if (estudianteActual.nombre != e.nombre) {
+                let span = $(`#${e.fila}${e.columna}`)[0];
+                span.innerHTML = "Escribiendo";
+                setTimeout(() => {
+                    span.innerHTML = "";
+                }, 3000);
+            }
+        }
+    });
+    socket.on('getEncuestaPro', function (data) {
+        cantRespuesta = [];
+        resGrafica = [];
+        let contador = 0;
+        for (let i = 0; i < data.length - 1; i++) {
+            for (let respuesta of respuestasEncu) {
+                if (data[i] == respuesta.respuesta) {
+                    contador++;
+                }
+            }
+            resGrafica.push(data[i]);
+            cantRespuesta.push(contador);
+            contador = 0;
+        }
+        if (estudianteActual.tipo == "profesor") {
+            var ctx = document.getElementById("myChart").getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: resGrafica,
+                    datasets: [{
+                        label: "# de respuestas",
+                        data: cantRespuesta,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255,99,132,0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(162, 162, 235, 0.2)',
+                            'rgba(255,99,132,0.2)',
+                        ],
+                        borderColor: [
+                            'rgba(255,99,132,1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 255, 132, 1)',
+                            'rgba(162, 162, 235, 1)',
+                            'rgba(162, 162, 235, 1)',
+                            'rgba(255,255,132,1)',
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        }
+    })
+    socket.on('getRespuestas', function (data) {
+        respuestasEncu = data;
+        socket.emit('getEncuestaPro');
     });
     let chat = $(".chat");
     socket.on('getMensajes', function (mensajes) {
@@ -46,6 +130,71 @@ $(document).ready(function () {
         }
         scrollAutomatico();
     });
+    socket.on('verEncuesta', function (data) {
+        if (data) {
+            $(".m-body")[0].innerHTML = "";
+            $(".m-body").append(`
+                <h1>Resultados</h1>
+                <canvas id="myChart" width="400" height="400"></canvas>
+            `);
+            socket.emit('getRespuestas');
+        } else {
+            $(".m-body")[0].innerHTML = "";
+            $(".m-body").append(`
+                <input id="pregunta" type="text" placeholder="Pregunta"><br>
+                <div id="respuestas"></div><br>
+                <input type="button" id="agregarRespuesta" value="Agregar Respuesta">
+                <input class="m-close" type="button" id="guardarEncuesta" value="Crear Encuesta">
+            `)
+            $("#agregarRespuesta").on('click', function (e) {
+                e.preventDefault();
+                let respuestas = $("#respuestas");
+                respuestas.append(`
+                <input type="text" placeholder="Respuesta">
+            `)
+            })
+            $("#guardarEncuesta").on('click', function (e) {
+                e.preventDefault();
+                let respuestas = $("#respuestas")[0].children;
+                let pregunta = $("#pregunta").val();
+                let aRespuestas = [];
+                for (let respuesta of respuestas) {
+                    aRespuestas.push(respuesta.value);
+                }
+                aRespuestas.push(pregunta);
+                socket.emit('nuevaEncuesta', aRespuestas);
+                $(this).fadeOut();
+                $("#pregunta").val('');
+                $("#respuestas input").val('');
+            })
+        }
+    });
+    socket.on('getEncuesta', function (data) {
+        $(".m-body")[0].innerHTML = "";
+        $(".m-body").append(`
+            <h1>¿${data[data.length - 1]}?</h1>
+            <form id="encuestaResponder" name="res" action="">
+            </form>
+        `)
+        for (let i = 0; i < data.length - 1; i++) {
+            preguntasEncu.push(data[i]);
+            $("#encuestaResponder").append(`
+                <input type="radio" name="respuesta" value="${data[i]}">${data[i]}<br>
+            `)
+        }
+        $("#encuestaResponder").append(`
+            <br>
+            <button id="resEncuesta" type="submit" class="btn red">Responder</button>
+        `)
+    })
+    $(".m-body").on('click', "#resEncuesta", function (e) {
+        e.preventDefault();
+        let enviar = {};
+        enviar.respuesta = verRespuesta(document.res.respuesta);
+        enviar.usuario = estudianteActual.nombre;
+        socket.emit('respuesta', enviar);
+    })
+    /* comunicacion */
     $('#iniciar').on('submit', function (e) {
         e.preventDefault();
         profesor = $("#profesor").val();
@@ -54,22 +203,33 @@ $(document).ready(function () {
         profesorEnv.nombre = profesor;
         profesorEnv.fila = fil;
         profesorEnv.columna = col;
-        profesorEnv.id = socket.id;
+        var file = document.querySelector('input[type="file"]').files[0];
+        console.log(file)
+        if (file)
+            getBase64(file);
         profesorEnv.tipo = "profesor";
-        socket.emit('iniciarChat', profesorEnv);
-        location.href = "/chat";
+        setTimeout(() => {
+            profesorEnv.imagen = imagen;
+            socket.emit('iniciarChat', profesorEnv);
+            location.href = "/chat";
+        }, 1000);
     });
     $('#iniciarSesion').on('submit', function (e) {
         e.preventDefault();
         estudiante = $("#estudiante").val();
         fil = $("#fil").val();
         col = $("#col").val();
+        var file = document.querySelector('input[type="file"]').files[0];
+        if (file)
+            getBase64(file);
         estudianteEnv.nombre = estudiante;
         estudianteEnv.fila = fil;
         estudianteEnv.columna = col;
-        estudianteEnv.id = socket.id;
         estudianteEnv.tipo = "estudiante";
-        socket.emit('getProfesor');
+        setTimeout(() => {
+            estudianteEnv.imagen = imagen;
+            socket.emit('getProfesor');
+        }, 1000);
         socket.on('getProfesor', function (data) {
             profesor = data[data.length - 1]
             if (fil >= profesor.fila || col >= profesor.columna) {
@@ -105,120 +265,11 @@ $(document).ready(function () {
         e.preventDefault();
         if (estudianteActual.tipo == "profesor") {
             socket.emit('verEncuesta');
-            socket.on('verEncuesta', function (data) {
-                if (data) {
-                    $(".m-body")[0].innerHTML = "";
-                    $(".m-body").append(`
-                        <h1>Ya hay una encuesta creada</h1>
-                        <canvas id="myChart" width="400" height="400"></canvas>
-                    `);
-                    var ctx = document.getElementById("myChart").getContext('2d');
-                    socket.emit('getRespuestas');
-                    socket.on('getRespuestas', function (data) {
-                        for (let respuesta of data) {
-                            respuestasEncu.push(data.respuesta);
-                        }
-                        console.log(respuestasEncu);
-                        // let r = 0;
-                        // for (pregunta of preguntasEncu) {
-                        //     for (respuesta of respuestasEncu) {
-                        //         if (respuesta == pregunta) r++;
-                        //     }
-                        //     cantRespuesta.push(r);
-                        //     r = 0;
-                        // }
-                        // console.log(data, respuestasEncu, preguntasEncu, cantRespuesta);
-                        var myChart = new Chart(ctx, {
-                            type: 'bar',
-                            data: {
-                                labels: preguntasEncu,
-                                datasets: [{
-                                    label: '# de respuestas',
-                                    data: cantRespuesta,
-                                    backgroundColor: [
-                                        'rgba(255, 99, 132, 0.2)',
-                                        'rgba(54, 162, 235, 0.2)',
-                                    ],
-                                    borderColor: [
-                                        'rgba(255,99,132,1)',
-                                        'rgba(54, 162, 235, 1)',
-                                    ],
-                                    borderWidth: 1
-                                }]
-                            },
-                            options: {
-                                scales: {
-                                    yAxes: [{
-                                        ticks: {
-                                            beginAtZero: true
-                                        }
-                                    }]
-                                }
-                            }
-                        });
-                    });
-                } else {
-                    $(".m-body").append(`
-                        <input id="pregunta" type="text" placeholder="Pregunta"><br>
-                        <div id="respuestas"></div><br>
-                        <input type="button" id="agregarRespuesta" value="Agregar Respuesta">
-                        <input class="m-close" type="button" id="guardarEncuesta" value="Crear Encuesta">
-                    `)
-                    $("#agregarRespuesta").on('click', function (e) {
-                        e.preventDefault();
-                        let respuestas = $("#respuestas");
-                        respuestas.append(`
-                        <input type="text" placeholder="Respuesta">
-                    `)
-                    })
-                    $("#guardarEncuesta").on('click', function (e) {
-                        e.preventDefault();
-                        let respuestas = $("#respuestas")[0].children;
-                        let pregunta = $("#pregunta").val();
-                        let aRespuestas = [];
-                        for (let respuesta of respuestas) {
-                            aRespuestas.push(respuesta.value);
-                        }
-                        aRespuestas.push(pregunta);
-                        socket.emit('nuevaEncuesta', aRespuestas);
-                        $(this).fadeOut();
-                        $("#pregunta").val('');
-                        $("#respuestas input").val('');
-                    })
-                }
-            })
         } else {
             socket.emit('verEncuesta');
             socket.on('verEncuesta', function (data) {
                 if (data) {
                     socket.emit('getEncuesta');
-                    socket.on('getEncuesta', function (data) {
-                        $(".m-body")[0].innerHTML = "";
-                        $(".m-body").append(`
-                            <h1>¿${data[data.length - 1]}?</h1>
-                            <form id="encuestaResponder" name="res" action="">
-                            </form>
-
-                        `)
-                        for (let i = 0; i < data.length - 1; i++) {
-                            preguntasEncu.push(data[i]);
-                            $("#encuestaResponder").append(`
-                                <input type="radio" name="respuesta" value="${data[i]}">${data[i]}<br>
-                            `)
-                        }
-                        $("#encuestaResponder").append(`
-                            <br>
-                            <button id="resEncuesta" type="submit" class="btn red">Responder</button>
-                        `)
-                    })
-                    $(".m-body").on('click', "#resEncuesta", function (e) {
-                        e.preventDefault();
-                        // let respuestaForm = verRespuesta(document.res.respuesta);
-                        let enviar = {};
-                        enviar.respuesta = verRespuesta(document.res.respuesta);
-                        enviar.usuario = estudianteActual.nombre;
-                        socket.emit('respuesta', enviar);
-                    })
                 } else {
                     $(".m-body")[0].innerHTML = "";
                     $(".m-body").append(`
@@ -229,6 +280,17 @@ $(document).ready(function () {
         }
     })
 });
+
+function getBase64(file) {
+    var reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function () {
+        imagen = reader.result;
+    };
+    reader.onerror = function (error) {
+        console.log('Error: ', error);
+    };
+}
 
 function verRespuesta(form) {
     for (let i = 0; i < form.length; i++)
@@ -271,7 +333,10 @@ function getEstudiantes() {
     socket.on('getEstudiantes', function (data) {
         estudiantes = data;
         for (let e of estudiantes) {
+            let f = $(`#foto${e.fila}${e.columna}`);
             let span = $(`#nombre${e.fila}${e.columna}`);
+            if (e.imagen)
+                f.attr("src", e.imagen);
             span[0].innerHTML = e.nombre;
         }
     });
@@ -285,7 +350,10 @@ function armarMatriz() {
             matrizU.append(`
             <div class="usuario">
                 <div class="usuairoContenido">
-                    <div class="foto"></div>
+                    <div class="foto">
+                        <img id="foto${i}${j}"/>
+                    </div>
+                    <span id='${i}${j}'></span>
                     <span id='nombre${i}${j}'>libre</span>
                 </div>
             </div>
@@ -302,6 +370,13 @@ function armarMatriz() {
     inputEnviar.on('keyup', function (e) {
         if (e.keyCode == 13) {
             enviarMensaje();
+        } else {
+            let me = $("#mensaje").val();
+            if (me.length > 0)
+                if (estudianteActual.tipo == "profesor")
+                    socket.emit('escribiendo', "profesor");
+                else
+                    socket.emit('escribiendo', estudianteActual);
         }
     });
 }
@@ -320,6 +395,7 @@ function getProfesor() {
     socket.emit('getProfesor');
     socket.on('getProfesor', function (data) {
         profesor = data[data.length - 1]
+        $("#imgProfesor").attr("src", profesor.imagen);
         $("#profesor")[0].innerHTML = profesor.nombre;
         armarMatriz();
     });
