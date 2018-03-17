@@ -8,14 +8,14 @@ var fil, col, profesor, estudiante;
 var socket;
 var profesor;
 var enviar, inputEnviar;
+var preguntasEncu = [];
+var respuestasEncu = [];
+var cantRespuesta = [];
 $(document).ready(function () {
     socket = io.connect('http://' + document.domain + ':' + location.port);
     $(".m-open").modalF();
     socket.on('nuevoEstudiante', function (nombre) {
         mensaje("El estudiante " + nombre + " inicio sesión");
-    });
-    socket.on('getRespuestas', function(data){
-        console.log(data);
     });
     let chat = $(".chat");
     socket.on('getMensajes', function (mensajes) {
@@ -110,9 +110,52 @@ $(document).ready(function () {
                     $(".m-body")[0].innerHTML = "";
                     $(".m-body").append(`
                         <h1>Ya hay una encuesta creada</h1>
+                        <canvas id="myChart" width="400" height="400"></canvas>
                     `);
-                    console.log(data)
+                    var ctx = document.getElementById("myChart").getContext('2d');
                     socket.emit('getRespuestas');
+                    socket.on('getRespuestas', function (data) {
+                        for (let respuesta of data) {
+                            respuestasEncu.push(data.respuesta);
+                        }
+                        let r = 0;
+                        for (pregunta of preguntasEncu) {
+                            for (respuesta of respuestasEncu) {
+                                if (respuesta == pregunta) r++;
+                            }
+                            cantRespuesta.push(r);
+                            r = 0;
+                        }
+                        console.log(data, respuestasEncu, preguntasEncu, cantRespuesta);
+                        var myChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: preguntasEncu,
+                                datasets: [{
+                                    label: '# de respuestas',
+                                    data: cantRespuesta,
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 0.2)',
+                                        'rgba(54, 162, 235, 0.2)',
+                                    ],
+                                    borderColor: [
+                                        'rgba(255,99,132,1)',
+                                        'rgba(54, 162, 235, 1)',
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            beginAtZero: true
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+                    });
                 } else {
                     $(".m-body").append(`
                         <input id="pregunta" type="text" placeholder="Pregunta"><br>
@@ -157,6 +200,7 @@ $(document).ready(function () {
 
                         `)
                         for (let i = 0; i < data.length - 1; i++) {
+                            preguntasEncu.push(data[i]);
                             $("#encuestaResponder").append(`
                                 <input type="radio" name="respuesta" value="${data[i]}">${data[i]}<br>
                             `)
@@ -166,7 +210,7 @@ $(document).ready(function () {
                             <button id="resEncuesta" type="submit" class="btn red">Responder</button>
                         `)
                     })
-                    $(".m-body").on('click', "#resEncuesta", function(e){
+                    $(".m-body").on('click', "#resEncuesta", function (e) {
                         e.preventDefault();
                         // let respuestaForm = verRespuesta(document.res.respuesta);
                         let enviar = {};

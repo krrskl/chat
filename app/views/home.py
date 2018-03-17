@@ -48,7 +48,6 @@ def nuevaEncuesta(encuestaRec):
 @socketio.on('respuesta')
 def respuesta(respuestaRec):
 	respuestas.append(respuestaRec)
-	print(respuestas)
 
 #envia
 @socketio.on('getMensajes')
