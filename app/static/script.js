@@ -20,10 +20,6 @@ $(document).ready(function () {
     socket.on('nuevoEstudiante', function (nombre) {
         mensaje("El estudiante " + nombre + " inicio sesión");
     });
-    socket.on('disconnect', function () {
-        socket.emit('disconnect');
-        mensaje("Un usuario cerro sesión");
-    });
     socket.on('escribiendo', function (e) {
         if (e == "profesor") {
             if (estudianteActual.tipo != "profesor") {
@@ -187,6 +183,10 @@ $(document).ready(function () {
             <button id="resEncuesta" type="submit" class="btn red">Responder</button>
         `)
     })
+    socket.on('desconectado', function(nombre){
+        mensaje("El estudiante " + nombre + " cerro sesión")
+    })
+    /* comunicacion */
     $(".m-body").on('click', "#resEncuesta", function (e) {
         e.preventDefault();
         let enviar = {};
@@ -194,7 +194,12 @@ $(document).ready(function () {
         enviar.usuario = estudianteActual.nombre;
         socket.emit('respuesta', enviar);
     })
-    /* comunicacion */
+    $("#cerrarSesion").on('click', function(e){
+        e.preventDefault();
+        console.log("hola")
+        socket.emit('cerrarSesion', estudianteActual);
+        socket.disconnect();
+    })
     $('#iniciar').on('submit', function (e) {
         e.preventDefault();
         profesor = $("#profesor").val();

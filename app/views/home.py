@@ -25,10 +25,18 @@ respuestas = []
 def connect():
 	print("usuario conectado")
 
+
 @socketio.on('disconnect')
 def disconnect():
 	print("usuario desconectado")
-	emit('desconectado', broadcast=True)
+
+
+@socketio.on('cerrarSesion')
+def cerrarSesion(est):
+	if est in estudiantes:
+		estudiantes.remove(est)
+	emit('desconectado',est['nombre'], broadcast=True)
+	print(estudiantes)
 
 @socketio.on('iniciarChat')
 def iniciarChat(profesorRe):
