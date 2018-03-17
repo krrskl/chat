@@ -25,6 +25,11 @@ respuestas = []
 def connect():
 	print("usuario conectado")
 
+@socketio.on('disconnect')
+def disconnect():
+	print("usuario desconectado")
+	emit('desconectado', broadcast=True)
+
 @socketio.on('iniciarChat')
 def iniciarChat(profesorRe):
 	profesor.append(profesorRe)
@@ -68,6 +73,15 @@ def verEncuesta():
 @socketio.on('getEncuesta')
 def getEncuesta():
 	emit('getEncuesta', encuesta[len(encuesta)-1])
+
+@socketio.on('getEncuestaPro')
+def getEncuestaPro():
+	if(encuesta):
+		emit('getEncuestaPro', encuesta[len(encuesta)-1])
+
+@socketio.on('escribiendo')
+def escribiendo(estudiante):
+	emit('escribiendo', estudiante, broadcast=True)
 
 @socketio.on('getProfesor')
 def getProfesor():

@@ -23,14 +23,17 @@ form {
     padding: 5px;
 }
 #myChart{
-    width: 400px !important;
-    height: 400px !important;;
+    width: 800px !important;
+    height: 500px !important;;
 }
 .m-body{
     width: 60%;
     margin: auto;
     color: white;
     margin-top: 10vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 .m-body > h3{
     margin-top: 45vh;
@@ -147,6 +150,9 @@ body{
     margin-top: 5px;
     border-radius: 50%;
     background-color: #27ae60;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
 }
 .usuairoContenido span {
     font-size: .8em;
