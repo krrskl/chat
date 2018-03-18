@@ -1,3 +1,7 @@
+// Hecho por:
+//     Jose Altamar
+//     Rubén Carrascal
+// Software para redes | chat usando socket 
 'use strict';
 var estudiantes = [];
 var profesorEnv = {};

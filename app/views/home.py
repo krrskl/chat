@@ -1,3 +1,8 @@
+# Hecho por:
+#     Jose Altamar
+#     Rubén Carrascal
+# Software para redes | chat usando socket 
+
 from flask import render_template, request
 from flask_socketio import emit, disconnect
 from app import app, socketio

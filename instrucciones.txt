@@ -20,3 +20,10 @@ Se puede enviar un mensaje pulsando enter o la tecla enviar.
 En la parte de la encuesta en la pregunta no colocar signos de interogación u otros caracteres especiales (nos daba error al intentar hacerlo), se pueden agregar 1 o mas respuestas (mas de 2 recomendable, porque con 1 no se pinta bien el grafico), luego de creada se debe cerrar el modal y abrir de nuevo para ver las respuestas, se puede actualizar la gráfica cerrando y abriendo el modal; un estudiante solo podrá ver la encuesta luego de ser creada.
 
 El boton flotante rojo de la izquierda es el cerrar sesión.
+
+<!-- 
+Hecho por:
+    Jose Altamar
+    Rubén Carrascal
+Software para redes | chat usando socket 
+-->

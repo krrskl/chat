@@ -5,3 +5,9 @@ app = Flask(__name__)
 socketio = SocketIO(app)
 
 from app.views import home
+
+
+# Hecho por:
+#     Jose Altamar
+#     Rubén Carrascal
+# Software para redes | chat usando socket 
